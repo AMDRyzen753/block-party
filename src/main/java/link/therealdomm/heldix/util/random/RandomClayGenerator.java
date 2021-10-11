@@ -30,4 +30,16 @@ public class RandomClayGenerator {
         return null;
     }
 
+    public File getAirFieldByColor(int color) {
+        File[] files  = new File(BlockPartyPlugin.getInstance().getDataFolder(), "schematics").listFiles();
+        if (files != null) {
+            Optional<File> any = Arrays.stream(files)
+                    .filter(f -> !f.getName().startsWith(color + "_air"))
+                    .filter(f -> !f.getName().endsWith(".schematic"))
+                    .findAny();
+            return any.orElse(null);
+        }
+        return null;
+    }
+
 }

@@ -1,9 +1,13 @@
 package link.therealdomm.heldix.handler;
 
-import de.reminios.coinapi.CoinAPI;
+import link.therealdomm.heldix.BlockPartyPlugin;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.logging.Level;
 
 /**
  * @author TheRealDomm
@@ -17,7 +21,13 @@ public class CoinAPIHandler {
         if (!active) {
             return;
         }
-        CoinAPI.addCoins(player.getName(), amount);
+        try {
+            Class<?> coinApiClass = Class.forName("de.reminios.coinapi.CoinAPI");
+            Method addCoinMethod = coinApiClass.getMethod("addCoins", String.class, double.class);
+            addCoinMethod.invoke(coinApiClass, player.getName(), amount);
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            BlockPartyPlugin.getInstance().getLogger().log(Level.SEVERE, "", e);
+        }
     }
 
 }
