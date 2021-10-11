@@ -1,5 +1,6 @@
 package link.therealdomm.heldix.game;
 
+import com.google.gson.internal.Primitives;
 import link.therealdomm.heldix.enumeration.EnumGameState;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,13 @@ import lombok.Setter;
 public abstract class GameState {
 
     @Getter @Setter private static GameState currentGameState = null;
+
+    public static  <T extends GameState> T getCurrentGameState(Class<? extends T> type) {
+        if (currentGameState.getClass().getSimpleName().equals(type.getSimpleName())) {
+            return Primitives.wrap(type).cast(currentGameState);
+        }
+        return null;
+    }
 
     public static void initialize() {
         new LobbyGameState();

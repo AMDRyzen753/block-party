@@ -23,6 +23,7 @@ public class MessagesConfig implements Config {
     private Map<String, String> messages = new HashMap<String, String>() {{
         put("prefix", "&7[&cBlockParty&7]");
         put("lobby.countdown.format", "%prefix% &cDie Runde startet in {0} Sekunden.");
+        put("lobby.waiting", "%prefix% &7Warte auf Spieler...");
     }};
 
 }

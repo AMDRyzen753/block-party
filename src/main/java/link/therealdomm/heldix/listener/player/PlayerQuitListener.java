@@ -1,9 +1,15 @@
 package link.therealdomm.heldix.listener.player;
 
+import link.therealdomm.heldix.BlockPartyPlugin;
+import link.therealdomm.heldix.game.GameState;
+import link.therealdomm.heldix.game.LobbyGameState;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.Objects;
 
 /**
  * @author TheRealDomm
@@ -15,6 +21,10 @@ public class PlayerQuitListener implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         event.setQuitMessage(null);
+        if (BlockPartyPlugin.getInstance().getMainConfig().getMinPlayers() > Bukkit.getOnlinePlayers().size()) {
+            Objects.requireNonNull(GameState.getCurrentGameState(LobbyGameState.class)).getLobbyCountdown().cancel();
+            Objects.requireNonNull(GameState.getCurrentGameState(LobbyGameState.class)).setWaitingTask();
+        }
     }
 
 }
