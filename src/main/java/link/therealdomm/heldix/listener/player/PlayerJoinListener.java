@@ -1,5 +1,6 @@
 package link.therealdomm.heldix.listener.player;
 
+import link.therealdomm.heldix.player.BlockPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +16,7 @@ public class PlayerJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         event.setJoinMessage(null);
-        // TODO: 10.10.2021 download stats and stuff
+        BlockPlayer blockPlayer = BlockPlayer.getPlayer(player);
     }
 
 }

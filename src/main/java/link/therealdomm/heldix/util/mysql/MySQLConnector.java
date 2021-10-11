@@ -1,7 +1,6 @@
-package link.therealdomm.heldix.mysql;
+package link.therealdomm.heldix.util.mysql;
 
 import link.therealdomm.heldix.BlockPartyPlugin;
-import link.therealdomm.heldix.util.MySQLData;
 
 import java.sql.*;
 import java.util.ArrayList;

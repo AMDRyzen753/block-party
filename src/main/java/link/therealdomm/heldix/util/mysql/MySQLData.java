@@ -1,4 +1,4 @@
-package link.therealdomm.heldix.util;
+package link.therealdomm.heldix.util.mysql;
 
 import lombok.Data;
 

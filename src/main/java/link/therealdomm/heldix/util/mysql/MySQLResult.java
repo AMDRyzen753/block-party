@@ -1,4 +1,4 @@
-package link.therealdomm.heldix.mysql;
+package link.therealdomm.heldix.util.mysql;
 
 import com.google.gson.internal.Primitives;
 import link.therealdomm.heldix.BlockPartyPlugin;
@@ -65,7 +65,7 @@ public class MySQLResult {
 
         public Integer getInteger(String name) {
             Object o = this.dataSet.get(name);
-            if (o != null && o instanceof Integer) {
+            if (o instanceof Integer) {
                 return (Integer) o;
             }
             return DEFAULT_INTEGER;
@@ -73,7 +73,7 @@ public class MySQLResult {
 
         public String getString(String name) {
             Object o = this.dataSet.get(name);
-            if (o != null && o instanceof String) {
+            if (o instanceof String) {
                 return (String) o;
             }
             return DEFAULT_STRING;
@@ -85,7 +85,9 @@ public class MySQLResult {
                 if (o instanceof String) {
                     return UUID.fromString((String) o);
                 }
-            } catch (IllegalArgumentException e) {}
+            } catch (IllegalArgumentException e) {
+                BlockPartyPlugin.getInstance().getLogger().log(Level.WARNING, "", e);
+            }
             return null;
         }
     }

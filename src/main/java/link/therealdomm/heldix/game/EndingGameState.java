@@ -4,17 +4,17 @@ import link.therealdomm.heldix.enumeration.EnumGameState;
 
 /**
  * @author TheRealDomm
- * @since 10.10.2021
+ * @since 11.10.2021
  */
-public class LobbyGameState extends GameState {
+public class EndingGameState extends GameState {
 
-    public LobbyGameState() {
-        super(EnumGameState.LOBBY);
+    public EndingGameState() {
+        super(EnumGameState.ENDING);
         setCurrentGameState(this);
     }
 
     @Override
     public void onNextGameState() {
-        new InGameState();
+        /* can be safely ignored, last game state */
     }
 }

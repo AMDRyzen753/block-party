@@ -1,5 +1,7 @@
 package link.therealdomm.heldix.player;
 
+import link.therealdomm.heldix.BlockPartyPlugin;
+import link.therealdomm.heldix.model.StatsModel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -37,11 +39,14 @@ public class BlockPlayer {
     private final String name;
     private final String displayName;
     private int currentLevel = 0;
+    private StatsModel statsModel;
 
     public BlockPlayer(Player player) {
         this.uuid = player.getUniqueId();
         this.name = player.getName();
         this.displayName = player.getDisplayName();
+        BlockPartyPlugin.getInstance().getStatsRepo()
+                .getStats(this.uuid, (statsModel) -> BlockPlayer.this.statsModel = statsModel);
     }
 
 }

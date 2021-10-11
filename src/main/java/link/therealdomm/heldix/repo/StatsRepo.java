@@ -1,8 +1,8 @@
 package link.therealdomm.heldix.repo;
 
 import link.therealdomm.heldix.model.StatsModel;
-import link.therealdomm.heldix.mysql.MySQLConnector;
-import link.therealdomm.heldix.mysql.MySQLResult;
+import link.therealdomm.heldix.util.mysql.MySQLConnector;
+import link.therealdomm.heldix.util.mysql.MySQLResult;
 
 import java.util.UUID;
 import java.util.function.Consumer;

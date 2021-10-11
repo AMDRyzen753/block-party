@@ -1,6 +1,8 @@
 package link.therealdomm.heldix.config;
 
-import link.therealdomm.heldix.util.MySQLData;
+import link.therealdomm.heldix.util.configuration.Config;
+import link.therealdomm.heldix.util.location.PasteLocation;
+import link.therealdomm.heldix.util.mysql.MySQLData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,8 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class MainConfig {
+public class MainConfig implements Config {
 
+    private double configVersion = 1.0D;
     private MySQLData data = new MySQLData();
     private int coinsPerAbsolvedLevel = 100;
     private int minPlayers = 2;
@@ -23,7 +26,9 @@ public class MainConfig {
     private boolean usePremiumKick = false;
     private int lobbyTimer = 60;
     private int fullRoundTimer = 10;
+    private Integer[] announceTimes = {60, 30, 20, 10, 5, 3, 2, 1};
     private boolean disableTabComplete = true;
+    private PasteLocation pasteLocation = new PasteLocation();
     private String[] tabCompletableCommands = new String[]{"help", "start", "coins"};
 
 }
