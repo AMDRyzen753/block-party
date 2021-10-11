@@ -21,7 +21,7 @@ public class MySQLConnector {
     private static final String URL = "jdbc:mysql://%s:%d/%s";
     private static final String DRIVER_CLASS = "com.mysql.jdbc.Driver";
 
-    private AtomicBoolean openable = new AtomicBoolean(false);
+    private final AtomicBoolean openable = new AtomicBoolean(false);
     private final List<Connection> pendingConnections = new ArrayList<>();
     private final MySQLData data;
     private final ExecutorService executorService;

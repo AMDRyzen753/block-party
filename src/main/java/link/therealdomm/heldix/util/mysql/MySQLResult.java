@@ -45,7 +45,7 @@ public class MySQLResult {
         public static final Integer DEFAULT_INTEGER = -1;
         public static final String DEFAULT_STRING = "";
 
-        @Getter private Map<String, Object> dataSet = new LinkedHashMap<>();
+        @Getter private final Map<String, Object> dataSet = new LinkedHashMap<>();
 
         public void addData(String name, Object data) {
             this.dataSet.put(name, data);

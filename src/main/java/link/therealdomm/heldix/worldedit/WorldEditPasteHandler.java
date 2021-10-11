@@ -10,6 +10,7 @@ import org.bukkit.Location;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 /**
@@ -22,7 +23,7 @@ public class WorldEditPasteHandler {
         try {
             Vector to = new Vector(location.getX(), location.getY(), location.getZ());
             World weWorld = new BukkitWorld(location.getWorld());
-            EditSession editSession = ClipboardFormats.findByFile(file)
+            EditSession editSession = Objects.requireNonNull(ClipboardFormats.findByFile(file))
                     .load(file).paste(weWorld, to, false, true, null);
             editSession.flushQueue();
             return true;
