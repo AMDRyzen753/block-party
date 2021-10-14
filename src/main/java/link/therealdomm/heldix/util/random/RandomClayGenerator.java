@@ -22,7 +22,7 @@ public class RandomClayGenerator {
         return random.nextInt(0, 15);
     }
 
-    public PlatformType getFieldByColor(int color) {
+    public static PlatformType getFieldByColor(int color) {
         File[] files  = new File(BlockPartyPlugin.getInstance().getDataFolder(), "schematics")
                 .listFiles((dir, name) -> new File(dir, name).isDirectory());
         if (files != null) {

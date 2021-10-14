@@ -29,7 +29,7 @@ import java.util.logging.Level;
  */
 @Getter
 @Author("TheRealDomm")
-@Plugin(name = "BlockParty", version = "@VERSION")
+@Plugin(name = "BlockParty", version = "1.0.0")
 public class BlockPartyPlugin extends JavaPlugin {
 
     @Getter private static BlockPartyPlugin instance;

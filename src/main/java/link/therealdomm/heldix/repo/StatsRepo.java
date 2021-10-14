@@ -27,18 +27,20 @@ public class StatsRepo {
                 "points BIGINT, " +
                 "deaths BIGINT, " +
                 "top_level BIGINT, " +
+                "games_played BIGINT, " +
                 "PRIMARY KEY(uuid)) " +
                 "ENGINE=InnoDB DEFAULT CHARSET=latin1";
         this.connector.asyncUpdate(sql);
     }
 
     public void createPlayer(UUID uuid) {
-        String sql = "INSERT INTO block_party_stats (uuid, won_games, points, deaths, top_level) VALUES (?, ?, ?, ?, ?)";
-        this.connector.asyncUpdate(sql, uuid.toString(), 0, 0, 0, 0);
+        String sql = "INSERT INTO block_party_stats (uuid, won_games, points, deaths, top_level, games_played) " +
+                "values (?, ?, ?, ?, ?, ?)";
+        this.connector.asyncUpdate(sql, uuid.toString(), 0, 0, 0, 0, 0);
     }
 
     public void getStats(UUID uuid, Consumer<StatsModel> statsConsumer) {
-        String sql = "SELECT won_games, points, deaths, top_level, " +
+        String sql = "SELECT won_games, points, deaths, top_level, games_played, " +
                 "(SELECT COUNT(*) FROM block_party_stats WHERE points>x.points) AS rank " +
                 "FROM block_party_stats block_party_stats x WHERE x.uuid=?";
         this.connector.asyncQuery((result -> {
@@ -51,6 +53,7 @@ public class StatsRepo {
                 statsModel.setPoints(queryResult.getInteger("points"));
                 statsModel.setDeaths(queryResult.getInteger("deaths"));
                 statsModel.setTopLevel(queryResult.getInteger("top_level"));
+                statsModel.setGamesPlayed(queryResult.getInteger("games_played"));
                 statsConsumer.accept(statsModel);
             } else {
                 statsConsumer.accept(null);
@@ -59,7 +62,8 @@ public class StatsRepo {
     }
 
     public void updateStats(StatsModel statsModel) {
-        String sql = "UPDATE block_party_stats SET won_games=?, points=?, deaths=?, top_level=? WHERE uuid=?";
+        String sql = "UPDATE block_party_stats SET won_games=?, points=?, deaths=?, top_level=?, games_played=? " +
+                "WHERE uuid=?";
         this.connector.asyncUpdate(sql, statsModel.getWonGames(), statsModel.getPoints(),
                 statsModel.getDeaths(), statsModel.getTopLevel(), statsModel.getUuid().toString());
     }

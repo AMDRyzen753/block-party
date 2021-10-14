@@ -21,5 +21,34 @@ public class StatsModel {
     private Integer points;
     private Integer deaths;
     private Integer topLevel;
+    private Integer gamesPlayed;
+
+    public void add(StatEntry entry, int amount) {
+        switch (entry) {
+            case WON_GAMES:
+                this.wonGames = this.wonGames+amount;
+                break;
+            case POINTS:
+                this.points = this.points+amount;
+                break;
+            case DEATHS:
+                this.deaths = this.deaths+amount;
+                break;
+            case TOP_LEVEL:
+                this.topLevel = this.topLevel+amount;
+                break;
+            case GAMES_PLAYED:
+                this.gamesPlayed = this.gamesPlayed+amount;
+                break;
+        }
+    }
+
+    public enum StatEntry {
+        WON_GAMES,
+        POINTS,
+        DEATHS,
+        TOP_LEVEL,
+        GAMES_PLAYED
+    }
 
 }
