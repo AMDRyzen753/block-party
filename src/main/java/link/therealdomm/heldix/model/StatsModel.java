@@ -16,12 +16,12 @@ import java.util.UUID;
 public class StatsModel {
 
     private UUID uuid;
-    private Integer rank;
-    private Integer wonGames;
-    private Integer points;
-    private Integer deaths;
-    private Integer topLevel;
-    private Integer gamesPlayed;
+    private Integer rank = -1;
+    private Integer wonGames = 0;
+    private Integer points = 0;
+    private Integer deaths = 0;
+    private Integer topLevel = 0;
+    private Integer gamesPlayed = 0;
 
     public void add(StatEntry entry, int amount) {
         switch (entry) {

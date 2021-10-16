@@ -17,22 +17,22 @@ import java.util.stream.Collectors;
  */
 public class RandomClayGenerator {
 
-    public static int getRandomClayColor() {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        return random.nextInt(0, 15);
-    }
-
-    public static PlatformType getFieldByColor(int color) {
+    public static PlatformType getFieldByColor() {
         File[] files  = new File(BlockPartyPlugin.getInstance().getDataFolder(), "schematics")
                 .listFiles((dir, name) -> new File(dir, name).isDirectory());
         if (files != null) {
-            List<File> possibles = Arrays.stream(files)
-                    .filter(f -> !f.getName().startsWith(color + "_"))
-                    .collect(Collectors.toList());
+            List<File> possibles = Arrays.stream(files).collect(Collectors.toList());
             int schematicFolder = ThreadLocalRandom.current().nextInt(0, possibles.size() - 1);
             File file = possibles.get(schematicFolder);
             if (!file.isDirectory()) {
                 return null;
+            }
+            String colorString = file.getName().split("_")[0];
+            int color;
+            try {
+                color = Integer.parseInt(colorString);
+            } catch (Exception e) {
+                color = 0;
             }
             File[] contents = file.listFiles();
             if (contents == null) {

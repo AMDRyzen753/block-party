@@ -43,12 +43,25 @@ public class LobbyGameState extends GameState {
     }
 
     public void startCountdown() {
+        this.waitingTask.cancel();
         this.lobbyCountdown = new LobbyCountdown();
         this.lobbyCountdown.startCountdown(BlockPartyPlugin.getInstance().getMainConfig().getLobbyTimer());
     }
 
     @Override
     public void onNextGameState() {
+        //this.lobbyCountdown.cancel();
+        this.waitingTask.cancel(); //clean later
         new InGameState();
+    }
+
+    @Override
+    public void disable() {
+        if (this.lobbyCountdown != null) {
+            this.lobbyCountdown.cancel();
+        }
+        else {
+            this.waitingTask.cancel();
+        }
     }
 }

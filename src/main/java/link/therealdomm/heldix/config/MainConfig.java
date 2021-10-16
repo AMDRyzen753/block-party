@@ -34,6 +34,7 @@ public class MainConfig implements Config {
     private String[] tabCompletableCommands = new String[]{"help", "start", "coins"};
     private PlayerLocation specLocation = new PlayerLocation();
     private PlayerLocation gameLocation = new PlayerLocation();
+    private PlayerLocation lobbyLocation = new PlayerLocation();
     private double initialSeconds = 10.0D;
     private double minimalSeconds = 0.5D;
     private double decreaseSeconds = 0.5D;

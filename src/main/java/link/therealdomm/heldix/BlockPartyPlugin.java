@@ -1,5 +1,7 @@
 package link.therealdomm.heldix;
 
+import link.therealdomm.heldix.command.SetupCommand;
+import link.therealdomm.heldix.command.StartCommand;
 import link.therealdomm.heldix.config.MainConfig;
 import link.therealdomm.heldix.config.MessagesConfig;
 import link.therealdomm.heldix.game.GameState;
@@ -15,8 +17,11 @@ import link.therealdomm.heldix.repo.StatsRepo;
 import link.therealdomm.heldix.util.configuration.ConfigLoader;
 import link.therealdomm.heldix.util.mysql.MySQLConnector;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.annotation.command.Command;
+import org.bukkit.plugin.java.annotation.command.Commands;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
 
@@ -30,8 +35,12 @@ import java.util.logging.Level;
 @Getter
 @Author("TheRealDomm")
 @Plugin(name = "BlockParty", version = "1.0.0")
+@Commands({
+        @Command(name = "start", permission = "command.start"), @Command(name = "setup", permission = "command.setup")
+})
 public class BlockPartyPlugin extends JavaPlugin {
 
+    @Getter @Setter private static boolean setupEnabled = false;
     @Getter private static BlockPartyPlugin instance;
 
     private MainConfig mainConfig;
@@ -63,6 +72,7 @@ public class BlockPartyPlugin extends JavaPlugin {
                 BlockIgniteListener.class,
                 BlockPlaceListener.class,
                 CreatureSpawnListener.class,
+                EntityDamageListener.class,
                 EntityExplodeListener.class,
                 EntityInteractListener.class,
                 HangingBreakListener.class,
@@ -74,7 +84,8 @@ public class BlockPartyPlugin extends JavaPlugin {
                 PlayerQuitListener.class,
                 WeatherChangeListener.class
         );
-
+        this.getCommand("setup").setExecutor(new SetupCommand());
+        this.getCommand("start").setExecutor(new StartCommand());
         GameState.initialize();
     }
 
@@ -93,6 +104,16 @@ public class BlockPartyPlugin extends JavaPlugin {
                 this.getLogger().log(Level.WARNING, "", e);
             }
         }
+    }
+
+    public void saveMainConfig() {
+        File file = new File(this.getDataFolder(), "config.json");
+        ConfigLoader.save(this.mainConfig, file);
+    }
+
+    public void saveMessageConfig() {
+        File file = new File(this.getDataFolder(), "messages.json");
+        ConfigLoader.save(this.messagesConfig, file);
     }
 
 }

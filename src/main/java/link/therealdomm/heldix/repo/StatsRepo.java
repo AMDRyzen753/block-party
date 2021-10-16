@@ -42,7 +42,7 @@ public class StatsRepo {
     public void getStats(UUID uuid, Consumer<StatsModel> statsConsumer) {
         String sql = "SELECT won_games, points, deaths, top_level, games_played, " +
                 "(SELECT COUNT(*) FROM block_party_stats WHERE points>x.points) AS rank " +
-                "FROM block_party_stats block_party_stats x WHERE x.uuid=?";
+                "FROM block_party_stats x WHERE x.uuid=?";
         this.connector.asyncQuery((result -> {
             if (result != null && !result.getResults().isEmpty()) {
                 MySQLResult.Result queryResult = result.getResults().get(0);
@@ -56,7 +56,9 @@ public class StatsRepo {
                 statsModel.setGamesPlayed(queryResult.getInteger("games_played"));
                 statsConsumer.accept(statsModel);
             } else {
-                statsConsumer.accept(null);
+                StatsModel statsModel = new StatsModel();
+                statsModel.setUuid(uuid);
+                statsConsumer.accept(statsModel);
             }
         }), sql, uuid.toString());
     }
@@ -65,7 +67,8 @@ public class StatsRepo {
         String sql = "UPDATE block_party_stats SET won_games=?, points=?, deaths=?, top_level=?, games_played=? " +
                 "WHERE uuid=?";
         this.connector.asyncUpdate(sql, statsModel.getWonGames(), statsModel.getPoints(),
-                statsModel.getDeaths(), statsModel.getTopLevel(), statsModel.getUuid().toString());
+                statsModel.getDeaths(), statsModel.getTopLevel(), statsModel.getGamesPlayed(),
+                statsModel.getUuid().toString());
     }
 
 }

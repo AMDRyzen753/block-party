@@ -24,6 +24,11 @@ public abstract class GameState {
         new LobbyGameState();
     }
 
+    public static void reset() {
+        currentGameState.disable();
+        currentGameState = null;
+    }
+
     @Getter private final EnumGameState gameState;
 
     public GameState(EnumGameState gameState) {
@@ -31,5 +36,7 @@ public abstract class GameState {
     }
 
     public abstract void onNextGameState();
+
+    public abstract void disable();
 
 }

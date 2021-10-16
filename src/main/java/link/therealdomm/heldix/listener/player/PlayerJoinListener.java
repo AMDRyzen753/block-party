@@ -23,6 +23,13 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         event.setJoinMessage(null);
         BlockPlayer blockPlayer = BlockPlayer.getPlayer(player);
+        BlockPartyPlugin.getInstance().getStatsRepo().getStats(player.getUniqueId(), statsModel -> {
+            blockPlayer.setStatsModel(statsModel);
+            System.out.println("rank: " + statsModel.getRank());
+            if (statsModel.getRank() == -1) {
+                BlockPartyPlugin.getInstance().getStatsRepo().createPlayer(player.getUniqueId());
+            }
+        });
         if (BlockPartyPlugin.getInstance().getMainConfig().getMinPlayers() <= Bukkit.getOnlinePlayers().size()) {
             Objects.requireNonNull(GameState.getCurrentGameState(LobbyGameState.class)).getWaitingTask().cancel();
             Objects.requireNonNull(GameState.getCurrentGameState(LobbyGameState.class)).startCountdown();

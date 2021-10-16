@@ -10,10 +10,12 @@ import link.therealdomm.heldix.util.random.RandomClayGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author TheRealDomm
@@ -31,14 +33,24 @@ public class InGameState extends GameState {
         super(EnumGameState.IN_GAME);
         setCurrentGameState(this);
         BlockPlayer.getPlayers().forEach(BlockPlayer::addPlayedGame);
+        this.teleportInGame();
     }
 
     public void setupTask() {
         Location paste = BlockPartyPlugin.getInstance().getMainConfig().getPasteLocation().toLocation();
-        PlatformType platformType = RandomClayGenerator.getFieldByColor(RandomClayGenerator.getRandomClayColor());
+        PlatformType platformType = RandomClayGenerator.getFieldByColor();
         if (platformType == null) {
             this.setupTask();
             return;
+        }
+        for (BlockPlayer player : BlockPlayer.getPlayers()) {
+            if (player.isInGame()) {
+                Player bukkit = Bukkit.getPlayer(player.getUuid());
+                if (bukkit != null) {
+                    bukkit.getInventory().setItem(4, new ItemStack(Material.STAINED_CLAY,
+                            1, (byte) platformType.getColor()));
+                }
+            }
         }
         platformType.paste(platformType.getInitialField(), paste);
         if (this.run >= 1) {
@@ -67,6 +79,7 @@ public class InGameState extends GameState {
     public void checkPlayers(int color) {
         for (BlockPlayer player : BlockPlayer.getPlayers()) {
             if (!player.isInGame()) {
+                player.sendMessage("bist anscheinend ned drin!");
                 continue;
             }
             if (!player.checkBlock(Material.STAINED_CLAY, color)) {
@@ -74,11 +87,29 @@ public class InGameState extends GameState {
                 player.addDeath();
                 StatsModel statsModel = player.getStatsModel();
                 BlockPartyPlugin.getInstance().getStatsRepo().updateStats(statsModel);
+                this.teleportSpec();
+                player.sendMessage("Nope bist raus!");
             } else {
                 player.addPoints(BlockPartyPlugin.getInstance().getMainConfig().getPointsPerLevel());
                 player.checkTopLevel();
+                player.sendMessage("Jo, bist weiter!");
             }
         }
+        int left = (int) BlockPlayer.getPlayers().stream().filter(BlockPlayer::isInGame).count();
+        if (left < 2) {
+            Optional<BlockPlayer> optional = BlockPlayer.getPlayers().stream().filter(BlockPlayer::isInGame).findFirst();
+            if (!optional.isPresent()) {
+                BlockPartyPlugin.getInstance().getLogger().severe("Error while getting winner, starting over...!");
+                Bukkit.getScheduler().runTaskLater(BlockPartyPlugin.getInstance(), this::setupTask, 20*5L);
+                return;
+            }
+            BlockPlayer player = optional.get();
+            player.sendMessage("You won!");
+            Bukkit.broadcastMessage(player.getDisplayName() + " won!");
+            this.onNextGameState();
+            return;
+        }
+        Bukkit.getScheduler().runTaskLater(BlockPartyPlugin.getInstance(), this::setupTask, 20*5L);
     }
 
     public void teleportPlayers(Location location) {
@@ -100,5 +131,10 @@ public class InGameState extends GameState {
     @Override
     public void onNextGameState() {
         new EndingGameState();
+    }
+
+    @Override
+    public void disable() {
+        this.task.cancel();
     }
 }
