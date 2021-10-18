@@ -208,6 +208,9 @@ public class BlockPlayer {
         }
     }
 
+    /**
+     * plays the level up sound for the player
+     */
     public void playPing() {
         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
         String sound;
