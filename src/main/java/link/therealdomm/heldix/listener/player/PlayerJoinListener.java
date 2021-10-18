@@ -25,6 +25,8 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().clear();
+        player.setFoodLevel(20);
+        player.setHealth(20);
         event.setJoinMessage(null);
         player.teleport(BlockPartyPlugin.getInstance().getMainConfig().getLobbyLocation().toLocation());
         if (GameState.getCurrentGameState(LobbyGameState.class) == null) {

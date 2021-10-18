@@ -13,7 +13,6 @@ public class BlockPlaceListener implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
         event.setCancelled(true);
-        event.setBuild(false);
     }
 
 }

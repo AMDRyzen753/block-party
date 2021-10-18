@@ -1,6 +1,7 @@
 package link.therealdomm.heldix.handler;
 
 import link.therealdomm.heldix.player.BlockPlayer;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class SpectatorHandler {
 
-    private List<Player> spectators = new ArrayList<>();
+    @Getter private List<Player> spectators = new ArrayList<>();
 
     /**
      * removes a spectator from the spec list

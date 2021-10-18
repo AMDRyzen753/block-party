@@ -41,7 +41,6 @@ import java.util.logging.Level;
 @Getter
 @Author("TheRealDomm")
 @Plugin(name = "BlockParty", version = "1.0.0")
-@SoftDependsOn({@SoftDependency("ProtocolLib")})
 @Commands({
         @Command(name = "start", permission = "command.start"), @Command(name = "setup", permission = "command.setup")
 })
@@ -94,12 +93,16 @@ public class BlockPartyPlugin extends JavaPlugin {
                 HangingPlaceListener.class,
                 InventoryClickListener.class,
                 InventoryDragListener.class,
+                FoodLevelListener.class,
                 PlayerDropItemListener.class,
                 PlayerInteractAtEntityListener.class,
                 PlayerInteractEntityListener.class,
                 PlayerInteractListener.class,
+                PlayerLoginListener.class,
+                PlayerMoveListener.class,
                 PlayerJoinListener.class,
                 PlayerQuitListener.class,
+                PlayerSpawnListener.class,
                 WeatherChangeListener.class
         );
         this.getCommand("setup").setExecutor(new SetupCommand());

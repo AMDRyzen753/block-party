@@ -8,6 +8,7 @@ import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -204,6 +205,20 @@ public class BlockPlayer {
         Player player;
         if ((player = Bukkit.getPlayer(this.uuid)) != null) {
             player.sendMessage(message);
+        }
+    }
+
+    public void playPing() {
+        String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+        String sound;
+        if (version.contains("v1_8")) {
+            sound = "LEVEL_UP";
+        } else {
+            sound = "ENTITY_PLAYER_LEVELUP";
+        }
+        Player player;
+        if ((player = Bukkit.getPlayer(this.uuid)) != null) {
+            player.playSound(player.getLocation(), Sound.valueOf(sound), 1.0F, 1.0F);
         }
     }
 

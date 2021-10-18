@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import lombok.Cleanup;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * the loader implementation to load simple json configs, requires GSON
@@ -23,7 +24,9 @@ public class ConfigLoader {
      */
     public static void save(Config config, File file) {
         try {
-            @Cleanup BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            //@Cleanup BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            @Cleanup BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
             GSON.toJson(config, writer);
         } catch (IOException e) {
             throw new IllegalStateException("Could not save config to " + file.getAbsolutePath(), e);

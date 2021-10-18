@@ -30,6 +30,8 @@ public class StartCommand implements CommandExecutor {
                     gameState.getLobbyCountdown().setRemainingTime(10);
                     gameState.setStarted(true);
                     sender.sendMessage(MessageHandler.getMessage("game.started"));
+                } else {
+                    sender.sendMessage(MessageHandler.getMessage("lobby.started_already"));
                 }
             } else {
                 sender.sendMessage(MessageHandler.getMessage("lobby.started_already"));

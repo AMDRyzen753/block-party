@@ -3,11 +3,13 @@ package link.therealdomm.heldix.game;
 import com.google.common.util.concurrent.AtomicDouble;
 import link.therealdomm.heldix.BlockPartyPlugin;
 import link.therealdomm.heldix.enumeration.EnumGameState;
+import link.therealdomm.heldix.handler.ActionBarHandler;
 import link.therealdomm.heldix.handler.MessageHandler;
 import link.therealdomm.heldix.model.StatsModel;
 import link.therealdomm.heldix.player.BlockPlayer;
 import link.therealdomm.heldix.util.platform.PlatformType;
 import link.therealdomm.heldix.util.random.RandomClayGenerator;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,6 +32,8 @@ public class InGameState extends GameState {
     private Double time = BlockPartyPlugin.getInstance().getMainConfig().getInitialSeconds();
     private int run = 0;
     private BukkitTask task;
+    private BukkitTask actionBarTask;
+    @Getter private List<BlockPlayer> lastGone = new ArrayList<>();
 
     public InGameState() {
         super(EnumGameState.IN_GAME);
@@ -68,11 +74,17 @@ public class InGameState extends GameState {
         }
         this.run++;
         AtomicDouble atomicDouble = new AtomicDouble(0);
+        if (this.actionBarTask != null) {
+            this.actionBarTask.cancel();
+            this.actionBarTask = null;
+        }
         this.task = Bukkit.getScheduler().runTaskTimer(
                 BlockPartyPlugin.getInstance(),
                 () -> {
+                    ActionBarHandler.sendCountDown(Long.valueOf(Math.round(this.time-atomicDouble.get())).intValue(), platformType.getColor());
                     if (atomicDouble.get() == this.time) {
                         this.task.cancel();
+                        this.actionBarTask = ActionBarHandler.sendStop();
                         platformType.paste(platformType.getAirField(), paste);
                         this.checkPlayers(platformType.getColor());
                         return;
@@ -89,6 +101,7 @@ public class InGameState extends GameState {
      * @param color the sub id of the clay block to check
      */
     public void checkPlayers(int color) {
+        this.lastGone.clear();
         for (BlockPlayer player : BlockPlayer.getPlayers()) {
             if (!player.isInGame()) {
                 continue;
@@ -102,20 +115,42 @@ public class InGameState extends GameState {
                 BlockPartyPlugin.getInstance().getSpectatorHandler().setSpectator(Bukkit.getPlayer(player.getUuid()));
                 player.sendMessage(MessageHandler.getMessage("ingame.eliminated"));
                 player.dispatchCoins();
+                this.lastGone.add(player);
             } else {
                 player.addLevel();
                 player.addPoints(BlockPartyPlugin.getInstance().getMainConfig().getPointsPerLevel());
                 player.addCoins();
                 player.checkTopLevel();
                 player.sendMessage(MessageHandler.getMessage("ingame.passed"));
+                player.playPing();
             }
         }
         int left = (int) BlockPlayer.getPlayers().stream().filter(BlockPlayer::isInGame).count();
         if (left < 2) {
             Optional<BlockPlayer> optional = BlockPlayer.getPlayers().stream().filter(BlockPlayer::isInGame).findFirst();
             if (!optional.isPresent()) {
-                BlockPartyPlugin.getInstance().getLogger().severe("Error while getting winner, starting over...!");
-                Bukkit.getScheduler().runTaskLater(BlockPartyPlugin.getInstance(), this::setupTask, 20*5L);
+                StringBuilder builder = new StringBuilder();
+                for (BlockPlayer player : this.lastGone) {
+                    builder.append(player.getDisplayName()).append(", ");
+                }
+                String substring;
+                try {
+                    substring = builder.substring(0, builder.toString().length() - 2);
+                } catch (Exception e) {
+                    substring = "niemand";
+                }
+                for (BlockPlayer player : BlockPlayer.getPlayers()) {
+                    if (this.lastGone.contains(player)) {
+                        player.sendMessage(MessageHandler.getMessage("self.won"));
+                        player.addWonGame();
+                        player.dispatchCoins();
+                        BlockPartyPlugin.getInstance().getStatsRepo().updateStats(player.getStatsModel());
+                    } else {
+                        player.sendMessage(MessageHandler.getMessage("multiple.won", substring));
+                    }
+                }
+                BlockPartyPlugin.getInstance().getLogger().severe("Round had multiple winners. (" + substring + ")");
+                this.onNextGameState();
                 return;
             }
             BlockPlayer player = optional.get();
@@ -131,7 +166,7 @@ public class InGameState extends GameState {
             this.onNextGameState();
             return;
         }
-        Bukkit.getScheduler().runTaskLater(BlockPartyPlugin.getInstance(), this::setupTask, 20*5L);
+        Bukkit.getScheduler().runTaskLater(BlockPartyPlugin.getInstance(), this::setupTask, 20*2L);
     }
 
     /**

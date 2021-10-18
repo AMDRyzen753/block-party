@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * the data holder class for the config.json
  *
@@ -42,5 +45,23 @@ public class MainConfig implements Config {
     private double initialSeconds = 10.0D;
     private double minimalSeconds = 0.5D;
     private double decreaseSeconds = 0.5D;
+    private Map<Integer, String> colorNameMapping = new LinkedHashMap<Integer, String>() {{
+        put(0, "WEISS");
+        put(1, "ORANGE");
+        put(2, "MAGENTA");
+        put(3, "HELL BLAU");
+        put(4, "GELB");
+        put(5, "HELL GRÜN");
+        put(6, "PINK");
+        put(7, "GRAU");
+        put(8, "HELL GRAU");
+        put(9, "CYAN");
+        put(10, "LILA");
+        put(11, "BLAU");
+        put(12, "BRAUN");
+        put(13, "GRÜN");
+        put(14, "ROT");
+        put(15, "SCHWARZ");
+    }};
 
 }

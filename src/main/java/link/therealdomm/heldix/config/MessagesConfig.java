@@ -33,10 +33,15 @@ public class MessagesConfig implements Config {
         put("ingame.passed", "%prefix% &aDu bist eine Runde weiter.");
         put("self.won", "%prefix% &aDu hast diese Runde gewonnen.");
         put("other.won", "%prefix% &aDie Runde hat {0} gewonnen!");
+        put("multiple.won", "%prefix% &aDie Spieler {0} haben die Runde gewonnen.");
         put("kicked.by.premium", "%prefix% &aDu wurdest gekickt da ein Premiumspieler die volle Runde betreten hat.");
         put("round.full", "%prefix% &cDiese Runde ist voll!");
         put("round.full.get_premium", "%prefix% &cDiese Runde ist voll. Kaufe dir Premium um volle Runden betreten zu können.");
         put("coins.added.amount", "%prefix% &aDir wurden {0} Coins hinzugefügt.");
     }};
+
+    private String countDownSymbol = "§0#";
+    private String countDownFormat = "§b§l%color_name%";
+    private String countDownStop = "§c§lSTOP";
 
 }
