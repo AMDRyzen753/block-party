@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 /**
+ * the command to setup the game
+ *
  * @author TheRealDomm
  * @since 16.10.2021
  */
@@ -37,9 +39,11 @@ public class SetupCommand implements CommandExecutor {
             this.sendHelp(sender);
             return true;
         }
-        if (!BlockPartyPlugin.isSetupEnabled()) {
-            sender.sendMessage("§cPlease enable setup mode first. (/setup toggle)");
-            return true;
+        if (!strings[0].equalsIgnoreCase("toggle")) {
+            if (!BlockPartyPlugin.isSetupEnabled()) {
+                sender.sendMessage("§cPlease enable setup mode first. (/setup toggle)");
+                return true;
+            }
         }
         SetupSubCommand setupSubCommand = this.getCommand(strings[0]);
         if (setupSubCommand == null) {

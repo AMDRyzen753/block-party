@@ -6,6 +6,8 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 
 /**
+ * the sub command implementation that toggles the setup mode
+ *
  * @author TheRealDomm
  * @since 16.10.2021
  */

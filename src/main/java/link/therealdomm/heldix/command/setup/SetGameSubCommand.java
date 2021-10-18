@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
+ * the sub command implementation to set the game location
+ *
  * @author TheRealDomm
  * @since 16.10.2021
  */
@@ -15,7 +17,7 @@ public class SetGameSubCommand implements SetupSubCommand {
 
     private final String name = "setgame";
     private final String permission = "command.setup.setgame";
-    private final String description = "";
+    private final String description = "Set the game location.";
 
     @Override
     public void onCommand(Player player, String[] strings) {

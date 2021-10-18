@@ -7,6 +7,8 @@ import lombok.Cleanup;
 import java.io.*;
 
 /**
+ * the loader implementation to load simple json configs, requires GSON
+ *
  * @author TheRealDomm
  * @since 11.10.2021
  */
@@ -14,6 +16,11 @@ public class ConfigLoader {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    /**
+     * save a config to a specific path
+     * @param config instance to save
+     * @param file to save to
+     */
     public static void save(Config config, File file) {
         try {
             @Cleanup BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -23,6 +30,13 @@ public class ConfigLoader {
         }
     }
 
+    /**
+     * updates a configuration file based on the Config version identifier
+     * @param clazz of config to be updated
+     * @param file to be updated to
+     * @param <T> the class of the config
+     * @return the requested config as class instantiation
+     */
     public static  <T extends Config> T update(Class<? extends T> clazz, File file) {
         if (file == null || !file.exists()) {
             throw new IllegalStateException("Could not update config, file not found!");
@@ -41,6 +55,13 @@ public class ConfigLoader {
         }
     }
 
+    /**
+     * loads a configuration from disk to a class pattern
+     * @param clazz of config to be loaded
+     * @param file to be loaded from
+     * @param <T> the class of the config
+     * @return the requested config as class instantiation
+     */
     public static  <T extends Config> T load(Class<? extends T> clazz, File file) {
         if (file == null) {
             throw new IllegalStateException("Could not load config, file does not exist!");

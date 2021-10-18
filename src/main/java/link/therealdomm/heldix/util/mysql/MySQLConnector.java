@@ -13,6 +13,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 /**
+ * the connector class that handles all mysql stuff
+ *
  * @author TheRealDomm
  * @since 10.10.2021
  */
@@ -26,6 +28,10 @@ public class MySQLConnector {
     private final MySQLData data;
     private final ExecutorService executorService;
 
+    /**
+     * the default constructor
+     * @param data with the database credentials
+     */
     public MySQLConnector(MySQLData data) {
         this.data = data;
         try {
@@ -48,6 +54,12 @@ public class MySQLConnector {
         this.executorService = Executors.newSingleThreadExecutor(builder);
     }
 
+    /**
+     * creates a result class of the given sql query
+     * @param sql the query string
+     * @param replacements to replace ? to a value
+     * @return the result
+     */
     public MySQLResult query(String sql, Object... replacements) {
         if (!this.openable.get()) {
             throw new IllegalStateException("Can not open any database connection!");
@@ -72,6 +84,12 @@ public class MySQLConnector {
         return null;
     }
 
+    /**
+     * dispatches a query async
+     * @param resultConsumer when result received
+     * @param sql the query string
+     * @param replacements to replace ? to a value
+     */
     public void asyncQuery(Consumer<MySQLResult> resultConsumer, String sql, Object... replacements) {
         this.executorService.execute(() -> {
             try {
@@ -84,6 +102,11 @@ public class MySQLConnector {
         });
     }
 
+    /**
+     * perform an update statement to the database
+     * @param sql the query string
+     * @param replacements to replace ? to a value
+     */
     public void update(String sql, Object... replacements) {
         if (!this.openable.get()) {
             throw new IllegalStateException("Can not open any database connection!");
@@ -105,6 +128,11 @@ public class MySQLConnector {
         }
     }
 
+    /**
+     * perform an async update
+     * @param sql the query string
+     * @param replacements to replace ? to a value
+     */
     public void asyncUpdate(String sql, Object... replacements) {
         this.executorService.execute(() -> {
             try {
@@ -115,11 +143,18 @@ public class MySQLConnector {
         });
     }
 
+    /**
+     * closes all pending connections and blocks the creation of new connections
+     */
     public void shutdown() {
         this.openable.set(false);
         this.closeConnections();
     }
 
+    /**
+     * creates a new connection
+     * @return null if connection could not be opened
+     */
     private Connection getConnection() {
         try {
             Connection connection = DriverManager.getConnection(
@@ -137,6 +172,10 @@ public class MySQLConnector {
         return null;
     }
 
+    /**
+     * closes the specified connection
+     * @param connection to be closed
+     */
     private void closeConnection(Connection connection) {
         if (connection != null) {
             try {
@@ -148,6 +187,9 @@ public class MySQLConnector {
         }
     }
 
+    /**
+     * closes all pending connections
+     */
     private void closeConnections() {
         for (Connection pendingConnection : this.pendingConnections) {
             try {

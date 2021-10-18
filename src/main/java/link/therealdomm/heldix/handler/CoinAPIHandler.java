@@ -10,6 +10,8 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 
 /**
+ * the handler class for the Heldix.NET CoinAPI
+ *
  * @author TheRealDomm
  * @since 10.10.2021
  */
@@ -17,6 +19,11 @@ public class CoinAPIHandler {
 
     @Getter @Setter private static boolean active = false;
 
+    /**
+     * adds the specified amount of coins to the player
+     * @param player the coins should be added to
+     * @param amount that should be added
+     */
     public static void addCoins(Player player, int amount) {
         if (!active) {
             return;

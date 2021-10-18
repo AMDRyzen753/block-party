@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
+ * the sub command implementation to set the default spectator location
+ *
  * @author TheRealDomm
  * @since 16.10.2021
  */

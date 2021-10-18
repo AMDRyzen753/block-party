@@ -14,11 +14,19 @@ import java.util.Objects;
 import java.util.logging.Level;
 
 /**
+ * simple implementation to paste files with worldedit
+ *
  * @author TheRealDomm
  * @since 10.10.2021
  */
 public class WorldEditPasteHandler {
 
+    /**
+     * pastes a schematic file to the specified location
+     * @param file to paste
+     * @param location to paste file to
+     * @return true if no exception was encountered
+     */
     public static boolean pasteFile(File file, Location location) {
         try {
             Vector to = new Vector(location.getX(), location.getY(), location.getZ());

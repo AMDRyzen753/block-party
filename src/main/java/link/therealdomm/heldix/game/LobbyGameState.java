@@ -5,20 +5,24 @@ import link.therealdomm.heldix.countdown.LobbyCountdown;
 import link.therealdomm.heldix.enumeration.EnumGameState;
 import link.therealdomm.heldix.handler.MessageHandler;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * the implementation of the game state for the time in lobby phase
+ *
  * @author TheRealDomm
  * @since 10.10.2021
  */
 @Getter
 public class LobbyGameState extends GameState {
 
+    @Setter private boolean started = false;
     private BukkitTask waitingTask;
-    private LobbyCountdown lobbyCountdown;
+    @Setter private LobbyCountdown lobbyCountdown;
 
     public LobbyGameState() {
         super(EnumGameState.LOBBY);
@@ -26,6 +30,9 @@ public class LobbyGameState extends GameState {
         this.setWaitingTask();
     }
 
+    /**
+     * creates the task that is responsible for the waiting time when not enough player are online
+     */
     public void setWaitingTask() {
         AtomicInteger i = new AtomicInteger(10);
         this.waitingTask = Bukkit.getScheduler().runTaskTimer(
@@ -42,6 +49,9 @@ public class LobbyGameState extends GameState {
         );
     }
 
+    /**
+     * starts the {@link LobbyCountdown}
+     */
     public void startCountdown() {
         this.waitingTask.cancel();
         this.lobbyCountdown = new LobbyCountdown();
@@ -50,8 +60,7 @@ public class LobbyGameState extends GameState {
 
     @Override
     public void onNextGameState() {
-        //this.lobbyCountdown.cancel();
-        this.waitingTask.cancel(); //clean later
+        this.lobbyCountdown.cancel();
         new InGameState();
     }
 

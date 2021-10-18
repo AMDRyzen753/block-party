@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
+ * the sub command implementation to set the spawn location in lobby phase
+ *
  * @author TheRealDomm
  * @since 16.10.2021
  */

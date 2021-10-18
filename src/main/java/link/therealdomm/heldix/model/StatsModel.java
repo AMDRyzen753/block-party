@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 /**
+ * the model class for the player stats saved in a MySQL database
+ *
  * @author TheRealDomm
  * @since 10.10.2021
  */
@@ -16,29 +18,58 @@ import java.util.UUID;
 public class StatsModel {
 
     private UUID uuid;
-    private Integer rank = -1;
+    private boolean exists = false;
     private Integer wonGames = 0;
     private Integer points = 0;
     private Integer deaths = 0;
     private Integer topLevel = 0;
     private Integer gamesPlayed = 0;
 
+    /**
+     * increments a specific stats entry
+     * @param entry the entry to increment by one
+     */
+    public void increment(StatEntry entry) {
+        switch (entry) {
+            case WON_GAMES:
+                this.wonGames++;
+                break;
+            case POINTS:
+                this.points++;
+                break;
+            case DEATHS:
+                this.deaths++;
+                break;
+            case TOP_LEVEL:
+                this.topLevel++;
+                break;
+            case GAMES_PLAYED:
+                this.gamesPlayed++;
+                break;
+        }
+    }
+
+    /**
+     * ad a specific amount to a stats entry
+     * @param entry to add amount to
+     * @param amount to add
+     */
     public void add(StatEntry entry, int amount) {
         switch (entry) {
             case WON_GAMES:
-                this.wonGames = this.wonGames+amount;
+                this.wonGames += amount;
                 break;
             case POINTS:
-                this.points = this.points+amount;
+                this.points += amount;
                 break;
             case DEATHS:
-                this.deaths = this.deaths+amount;
+                this.deaths += amount;
                 break;
             case TOP_LEVEL:
-                this.topLevel = this.topLevel+amount;
+                this.topLevel += amount;
                 break;
             case GAMES_PLAYED:
-                this.gamesPlayed = this.gamesPlayed+amount;
+                this.gamesPlayed += amount;
                 break;
         }
     }

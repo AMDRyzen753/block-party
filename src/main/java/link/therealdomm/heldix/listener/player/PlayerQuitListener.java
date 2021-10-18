@@ -22,10 +22,17 @@ public class PlayerQuitListener implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         BlockPlayer.remove(player.getUniqueId());
+        BlockPartyPlugin.getInstance().getSpectatorHandler().removeSpectator(player);
         event.setQuitMessage(null);
+        if (GameState.getCurrentGameState(LobbyGameState.class) == null) {
+            return;
+        }
         if (BlockPartyPlugin.getInstance().getMainConfig().getMinPlayers() > Bukkit.getOnlinePlayers().size()) {
-            Objects.requireNonNull(GameState.getCurrentGameState(LobbyGameState.class)).getLobbyCountdown().cancel();
-            Objects.requireNonNull(GameState.getCurrentGameState(LobbyGameState.class)).setWaitingTask();
+            if (Objects.requireNonNull(GameState.getCurrentGameState(LobbyGameState.class)).getLobbyCountdown() != null) {
+                Objects.requireNonNull(GameState.getCurrentGameState(LobbyGameState.class)).getLobbyCountdown().cancel();
+                Objects.requireNonNull(GameState.getCurrentGameState(LobbyGameState.class)).setLobbyCountdown(null);
+                Objects.requireNonNull(GameState.getCurrentGameState(LobbyGameState.class)).setWaitingTask();
+            }
         }
     }
 

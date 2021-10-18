@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 /**
+ * a json config compatible implementation of the {@link Location} for players
+ *
  * @author TheRealDomm
  * @since 14.10.2021
  */
@@ -22,6 +24,11 @@ public class PlayerLocation {
     private float yaw = 0;
     private float pitch = 0;
 
+    /**
+     * create a {@link PlayerLocation} from a {@link Location}
+     * @param l the location to create from
+     * @return a new instance of the {@link PlayerLocation} with the parameters of l
+     */
     public static PlayerLocation fromLocation(Location l) {
         return new PlayerLocation(
                 l.getWorld().getName(),
@@ -33,6 +40,10 @@ public class PlayerLocation {
         );
     }
 
+    /**
+     * parse the {@link PlayerLocation} to {@link Location}
+     * @return the bukkit {@link Location}
+     */
     public Location toLocation() {
         return new Location(
                 Bukkit.getWorld(this.world),

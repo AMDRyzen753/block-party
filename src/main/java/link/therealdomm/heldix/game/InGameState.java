@@ -3,6 +3,7 @@ package link.therealdomm.heldix.game;
 import com.google.common.util.concurrent.AtomicDouble;
 import link.therealdomm.heldix.BlockPartyPlugin;
 import link.therealdomm.heldix.enumeration.EnumGameState;
+import link.therealdomm.heldix.handler.MessageHandler;
 import link.therealdomm.heldix.model.StatsModel;
 import link.therealdomm.heldix.player.BlockPlayer;
 import link.therealdomm.heldix.util.platform.PlatformType;
@@ -15,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author TheRealDomm
@@ -34,8 +34,16 @@ public class InGameState extends GameState {
         setCurrentGameState(this);
         BlockPlayer.getPlayers().forEach(BlockPlayer::addPlayedGame);
         this.teleportInGame();
+        Bukkit.getScheduler().runTaskLater(
+                BlockPartyPlugin.getInstance(),
+                this::setupTask,
+                20*5L
+        );
     }
 
+    /**
+     * set's up the task for pasting random new schematics
+     */
     public void setupTask() {
         Location paste = BlockPartyPlugin.getInstance().getMainConfig().getPasteLocation().toLocation();
         PlatformType platformType = RandomClayGenerator.getFieldByColor();
@@ -76,10 +84,13 @@ public class InGameState extends GameState {
         );
     }
 
+    /**
+     * checks if the players are standing on the right color
+     * @param color the sub id of the clay block to check
+     */
     public void checkPlayers(int color) {
         for (BlockPlayer player : BlockPlayer.getPlayers()) {
             if (!player.isInGame()) {
-                player.sendMessage("bist anscheinend ned drin!");
                 continue;
             }
             if (!player.checkBlock(Material.STAINED_CLAY, color)) {
@@ -87,12 +98,16 @@ public class InGameState extends GameState {
                 player.addDeath();
                 StatsModel statsModel = player.getStatsModel();
                 BlockPartyPlugin.getInstance().getStatsRepo().updateStats(statsModel);
-                this.teleportSpec();
-                player.sendMessage("Nope bist raus!");
+                this.teleportSpec(player);
+                BlockPartyPlugin.getInstance().getSpectatorHandler().setSpectator(Bukkit.getPlayer(player.getUuid()));
+                player.sendMessage(MessageHandler.getMessage("ingame.eliminated"));
+                player.dispatchCoins();
             } else {
+                player.addLevel();
                 player.addPoints(BlockPartyPlugin.getInstance().getMainConfig().getPointsPerLevel());
+                player.addCoins();
                 player.checkTopLevel();
-                player.sendMessage("Jo, bist weiter!");
+                player.sendMessage(MessageHandler.getMessage("ingame.passed"));
             }
         }
         int left = (int) BlockPlayer.getPlayers().stream().filter(BlockPlayer::isInGame).count();
@@ -104,28 +119,46 @@ public class InGameState extends GameState {
                 return;
             }
             BlockPlayer player = optional.get();
-            player.sendMessage("You won!");
-            Bukkit.broadcastMessage(player.getDisplayName() + " won!");
+            player.sendMessage(MessageHandler.getMessage("self.won"));
+            player.dispatchCoins();
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (onlinePlayer.getUniqueId().equals(player.getUuid())) {
+                    onlinePlayer.sendMessage(MessageHandler.getMessage("other.won", player.getDisplayName()));
+                }
+            }
+            player.addWonGame();
+            BlockPartyPlugin.getInstance().getStatsRepo().updateStats(player.getStatsModel());
             this.onNextGameState();
             return;
         }
         Bukkit.getScheduler().runTaskLater(BlockPartyPlugin.getInstance(), this::setupTask, 20*5L);
     }
 
+    /**
+     * teleports all players to a specific location
+     * @param location to teleport players to
+     */
     public void teleportPlayers(Location location) {
         for (BlockPlayer player : BlockPlayer.getPlayers()) {
             player.teleport(location);
         }
     }
 
+    /**
+     * teleports all players to the in game location
+     */
     public void teleportInGame() {
         Location location = BlockPartyPlugin.getInstance().getMainConfig().getGameLocation().toLocation();
         this.teleportPlayers(location);
     }
 
-    public void teleportSpec() {
+    /**
+     * teleports a single player to the spectator location
+     * @param player the {@link BlockPlayer} to be teleported
+     */
+    public void teleportSpec(BlockPlayer player) {
         Location location = BlockPartyPlugin.getInstance().getMainConfig().getSpecLocation().toLocation();
-        this.teleportPlayers(location);
+        player.teleport(location);
     }
 
     @Override

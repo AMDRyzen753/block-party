@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
+ * the sub command implementation to set the paste location for the schematic
+ *
  * @author TheRealDomm
  * @since 16.10.2021
  */

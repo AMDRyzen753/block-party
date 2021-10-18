@@ -10,6 +10,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
+ * the data holder class for the config.json
+ *
  * @author TheRealDomm
  * @since 10.10.2021
  */
@@ -26,6 +28,8 @@ public class MainConfig implements Config {
     private int minPlayers = 2;
     private int maxPlayers = 24;
     private boolean usePremiumKick = false;
+    private boolean startNewServerIfInGame = true;
+    private String lobbyGroupName = "Lobby";
     private int lobbyTimer = 60;
     private int fullRoundTimer = 10;
     private Integer[] announceTimes = {60, 30, 20, 10, 5, 3, 2, 1};

@@ -14,7 +14,6 @@ public class WeatherChangeListener implements Listener {
     public void onWeatherChange(WeatherChangeEvent event) {
         event.getWorld().setThundering(false);
         event.getWorld().setStorm(false);
-        event.setCancelled(true);
     }
 
 }

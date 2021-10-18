@@ -3,6 +3,8 @@ package link.therealdomm.heldix.util.mysql;
 import lombok.Data;
 
 /**
+ * a simple data holder for the mysql credentials
+ *
  * @author TheRealDomm
  * @since 10.10.2021
  */

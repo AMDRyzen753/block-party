@@ -4,10 +4,8 @@ import link.therealdomm.heldix.BlockPartyPlugin;
 import link.therealdomm.heldix.util.platform.PlatformType;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -17,6 +15,10 @@ import java.util.stream.Collectors;
  */
 public class RandomClayGenerator {
 
+    /**
+     * searches for a random platform in the schematics folder
+     * @return the new {@link PlatformType}
+     */
     public static PlatformType getFieldByColor() {
         File[] files  = new File(BlockPartyPlugin.getInstance().getDataFolder(), "schematics")
                 .listFiles((dir, name) -> new File(dir, name).isDirectory());
